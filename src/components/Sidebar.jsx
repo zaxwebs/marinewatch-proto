@@ -1,8 +1,9 @@
-import { Search, Ship, Navigation, X, Play, ChevronDown } from 'lucide-react';
+import { Search, Ship, Navigation, X, Play, ChevronDown, MapPin } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { getClosestPoi } from '../lib/geoUtils';
 import { useState } from 'react';
 
-export default function Sidebar({ vessels, selectedVessel, onSelectVessel, onReplayStart, isOpen, setIsOpen }) {
+export default function Sidebar({ vessels, pois = [], selectedVessel, onSelectVessel, onReplayStart, isOpen, setIsOpen }) {
     const [searchQuery, setSearchQuery] = useState('');
     const [expandedVessel, setExpandedVessel] = useState(null);
 
@@ -82,7 +83,7 @@ export default function Sidebar({ vessels, selectedVessel, onSelectVessel, onRep
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-4 text-xs">
+                            <div className="flex items-center gap-3 text-xs flex-wrap">
                                 <div className="flex items-center gap-1 text-muted-foreground">
                                     <Navigation className="w-3 h-3" />
                                     <span className="font-mono">{vessel.speed.toFixed(1)}</span>
@@ -91,14 +92,22 @@ export default function Sidebar({ vessels, selectedVessel, onSelectVessel, onRep
                                 <div className="flex items-center gap-1 text-muted-foreground">
                                     <span className="font-mono">{vessel.heading}°</span>
                                 </div>
+                                {(() => {
+                                    const closest = getClosestPoi(vessel, pois);
+                                    return closest ? (
+                                        <div className="flex items-center gap-1 text-muted-foreground" title={closest.name}>
+                                            <MapPin className="w-3 h-3 shrink-0" />
+                                            <span className="truncate max-w-[80px]">{closest.name}</span>
+                                            <span className="text-[10px] shrink-0">({closest.distance.toFixed(1)} km)</span>
+                                        </div>
+                                    ) : null;
+                                })()}
                             </div>
                         </div>
 
                         {/* Expanded Details */}
                         {expandedVessel === vessel.id && (
                             <div className="px-3 pb-3 space-y-2 animate-in slide-in-from-top-2 fade-in duration-200">
-
-
                                 {onReplayStart && (
                                     <button
                                         onClick={(e) => {

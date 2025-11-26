@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Ship, Navigation, ChevronRight, Filter } from 'lucide-react';
+import { Search, Ship, Navigation, ChevronRight, MapPin } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { cn } from '../lib/utils';
+import { getClosestPoi } from '../lib/geoUtils';
 
 export default function Vessels() {
     const navigate = useNavigate();
-    const { vessels } = useApp();
+    const { vessels, pois } = useApp();
     const [searchQuery, setSearchQuery] = useState('');
     const [filterType, setFilterType] = useState('all');
     const [filterStatus, setFilterStatus] = useState('all');
@@ -118,10 +119,20 @@ export default function Vessels() {
                                             <span className="font-mono text-primary">{vessel.speed.toFixed(1)} kn</span>
                                         </div>
 
-                                        <div className="flex items-center justify-between text-xs">
-                                            <span className="text-muted-foreground">Destination</span>
-                                            <span className="font-medium truncate ml-2">{vessel.destination}</span>
-                                        </div>
+                                        {(() => {
+                                            const closest = getClosestPoi(vessel, pois);
+                                            return closest ? (
+                                                <div className="flex items-center justify-between text-xs">
+                                                    <span className="text-muted-foreground flex items-center gap-1">
+                                                        <MapPin size={10} />Nearest POI
+                                                    </span>
+                                                    <span className="font-medium truncate ml-2" title={closest.name}>
+                                                        {closest.name.length > 15 ? closest.name.slice(0, 15) + '...' : closest.name}
+                                                        <span className="text-muted-foreground ml-1">({closest.distance.toFixed(1)} km)</span>
+                                                    </span>
+                                                </div>
+                                            ) : null;
+                                        })()}
 
                                         <div className="flex items-center gap-1 text-xs text-muted-foreground pt-2 border-t border-border">
                                             <Navigation size={12} />

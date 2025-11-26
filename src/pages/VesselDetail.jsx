@@ -78,25 +78,25 @@ export default function VesselDetail() {
                             {!isEditing ? (
                                 <button
                                     onClick={() => setIsEditing(true)}
-                                    className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded flex items-center gap-2 transition-colors"
+                                    className="bg-primary hover:bg-primary/90 text-primary-foreground px-3 py-1.5 rounded text-sm font-medium flex items-center gap-1.5 transition-colors"
                                 >
-                                    <Edit2 size={16} />
+                                    <Edit2 size={14} />
                                     <span>Edit</span>
                                 </button>
                             ) : (
                                 <div className="flex gap-2">
                                     <button
                                         onClick={handleCancel}
-                                        className="bg-secondary hover:bg-accent text-foreground px-4 py-2 rounded flex items-center gap-2 transition-colors"
+                                        className="bg-secondary hover:bg-accent text-foreground px-3 py-1.5 rounded text-sm font-medium flex items-center gap-1.5 transition-colors"
                                     >
-                                        <X size={16} />
+                                        <X size={14} />
                                         <span>Cancel</span>
                                     </button>
                                     <button
                                         onClick={handleSave}
-                                        className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded flex items-center gap-2 transition-colors"
+                                        className="bg-primary hover:bg-primary/90 text-primary-foreground px-3 py-1.5 rounded text-sm font-medium flex items-center gap-1.5 transition-colors"
                                     >
-                                        <Save size={16} />
+                                        <Save size={14} />
                                         <span>Save</span>
                                     </button>
                                 </div>
@@ -200,20 +200,6 @@ export default function VesselDetail() {
                                     </select>
                                 ) : (
                                     <div className="text-sm font-medium">{vessel.status}</div>
-                                )}
-                            </div>
-
-                            <div>
-                                <label className="text-xs text-muted-foreground block mb-2 uppercase tracking-wider">Destination</label>
-                                {isEditing ? (
-                                    <input
-                                        type="text"
-                                        value={editForm.destination}
-                                        onChange={(e) => setEditForm({ ...editForm, destination: e.target.value })}
-                                        className="w-full bg-secondary border border-border rounded py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50"
-                                    />
-                                ) : (
-                                    <div className="text-sm font-medium">{vessel.destination}</div>
                                 )}
                             </div>
                         </div>

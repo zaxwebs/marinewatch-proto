@@ -358,28 +358,40 @@ export default function PointsOfInterest() {
                     <MapController fitBounds={mapFitBounds} />
                     <AddPointHandler isAdding={isAdding} onPointAdded={handlePointAdded} />
 
-                    {pois.map((poi) => (
-                        <Marker
-                            key={poi.id}
-                            position={[poi.lat, poi.lng]}
-                            icon={createPoiMarker(poi.color)}
-                            eventHandlers={{
-                                click: () => {
-                                    if (!isAdding) {
-                                        setSelectedPoi(poi);
-                                        setMapFitBounds([poi.lat, poi.lng]);
+                    {pois.map((poi) => {
+                        const isEditingThis = isEditing && selectedPoi?.id === poi.id;
+                        return (
+                            <Marker
+                                key={poi.id}
+                                position={[poi.lat, poi.lng]}
+                                icon={createPoiMarker(poi.color, isEditingThis)}
+                                draggable={isEditingThis}
+                                eventHandlers={{
+                                    click: () => {
+                                        if (!isAdding) {
+                                            setSelectedPoi(poi);
+                                            setMapFitBounds([poi.lat, poi.lng]);
+                                        }
+                                    },
+                                    dragend: (e) => {
+                                        if (isEditingThis) {
+                                            const { lat, lng } = e.target.getLatLng();
+                                            setPois(pois.map(p => p.id === poi.id ? { ...p, lat, lng } : p));
+                                        }
                                     }
-                                }
-                            }}
-                        >
-                            <Popup>
-                                <div className="p-2 min-w-[200px]">
-                                    <h3 className="font-medium text-sm mb-1">{poi.name}</h3>
-                                    <p className="text-xs text-muted-foreground">{poi.description || "No description"}</p>
-                                </div>
-                            </Popup>
-                        </Marker>
-                    ))}
+                                }}
+                            >
+                                {!isEditingThis && (
+                                    <Popup>
+                                        <div className="p-2 min-w-[200px]">
+                                            <h3 className="font-medium text-sm mb-1">{poi.name}</h3>
+                                            <p className="text-xs text-muted-foreground">{poi.description || "No description"}</p>
+                                        </div>
+                                    </Popup>
+                                )}
+                            </Marker>
+                        );
+                    })}
                 </MapContainer>
 
                 {/* Edit Panel */}

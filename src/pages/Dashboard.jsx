@@ -80,6 +80,7 @@ export default function Dashboard() {
         <div className="flex h-screen w-full overflow-hidden bg-background text-foreground relative">
             <Sidebar
                 vessels={vessels}
+                pois={pois}
                 selectedVessel={selectedVessel}
                 onSelectVessel={setSelectedVessel}
                 onReplayStart={handleReplayStart}
