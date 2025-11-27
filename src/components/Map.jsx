@@ -21,10 +21,7 @@ function MapController({ selectedVessel }) {
     const map = useMap();
     useEffect(() => {
         if (selectedVessel) {
-            map.flyTo([selectedVessel.lat, selectedVessel.lng], 14, {
-                animate: true,
-                duration: 1.5
-            });
+            map.setView([selectedVessel.lat, selectedVessel.lng], 14);
         }
     }, [selectedVessel, map]);
     return null;

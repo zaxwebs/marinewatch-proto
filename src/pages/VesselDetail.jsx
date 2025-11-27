@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Edit2, Save, X, Navigation, Anchor, MapPin, Clock } from 'lucide-react';
+import Map from '../components/Map';
 import { useApp } from '../context/AppContext';
 import { cn } from '../lib/utils';
 
@@ -10,7 +11,7 @@ const STATUSES = ['Moored', 'Moving', 'Anchored', 'Drifting'];
 export default function VesselDetail() {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { vessels, updateVessel } = useApp();
+    const { vessels, updateVessel, zones, pois } = useApp();
 
     const vessel = vessels.find(v => v.id === id);
     const [isEditing, setIsEditing] = useState(false);
@@ -150,58 +151,72 @@ export default function VesselDetail() {
                         </div>
                     </div>
 
-                    {/* Details Form */}
-                    <div className="bg-card border border-border rounded-lg p-6">
-                        <h2 className="text-lg font-semibold mb-4">Vessel Information</h2>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {/* Details Form */}
+                        <div className="bg-card border border-border rounded-lg p-6">
+                            <h2 className="text-lg font-semibold mb-4">Vessel Information</h2>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label className="text-xs text-muted-foreground block mb-2 uppercase tracking-wider">Vessel Name</label>
-                                {isEditing ? (
-                                    <input
-                                        type="text"
-                                        value={editForm.name}
-                                        onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                                        className="w-full bg-secondary border border-border rounded py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50"
-                                    />
-                                ) : (
-                                    <div className="text-sm font-medium">{vessel.name}</div>
-                                )}
-                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="text-xs text-muted-foreground block mb-2 uppercase tracking-wider">Vessel Name</label>
+                                    {isEditing ? (
+                                        <input
+                                            type="text"
+                                            value={editForm.name}
+                                            onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                                            className="w-full bg-secondary border border-border rounded py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50"
+                                        />
+                                    ) : (
+                                        <div className="text-sm font-medium">{vessel.name}</div>
+                                    )}
+                                </div>
 
-                            <div>
-                                <label className="text-xs text-muted-foreground block mb-2 uppercase tracking-wider">Type</label>
-                                {isEditing ? (
-                                    <select
-                                        value={editForm.type}
-                                        onChange={(e) => setEditForm({ ...editForm, type: e.target.value })}
-                                        className="w-full bg-secondary border border-border rounded py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50"
-                                    >
-                                        {VESSEL_TYPES.map(type => (
-                                            <option key={type} value={type}>{type}</option>
-                                        ))}
-                                    </select>
-                                ) : (
-                                    <div className="text-sm font-medium">{vessel.type}</div>
-                                )}
-                            </div>
+                                <div>
+                                    <label className="text-xs text-muted-foreground block mb-2 uppercase tracking-wider">Type</label>
+                                    {isEditing ? (
+                                        <select
+                                            value={editForm.type}
+                                            onChange={(e) => setEditForm({ ...editForm, type: e.target.value })}
+                                            className="w-full bg-secondary border border-border rounded py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50"
+                                        >
+                                            {VESSEL_TYPES.map(type => (
+                                                <option key={type} value={type}>{type}</option>
+                                            ))}
+                                        </select>
+                                    ) : (
+                                        <div className="text-sm font-medium">{vessel.type}</div>
+                                    )}
+                                </div>
 
-                            <div>
-                                <label className="text-xs text-muted-foreground block mb-2 uppercase tracking-wider">Status</label>
-                                {isEditing ? (
-                                    <select
-                                        value={editForm.status}
-                                        onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
-                                        className="w-full bg-secondary border border-border rounded py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50"
-                                    >
-                                        {STATUSES.map(status => (
-                                            <option key={status} value={status}>{status}</option>
-                                        ))}
-                                    </select>
-                                ) : (
-                                    <div className="text-sm font-medium">{vessel.status}</div>
-                                )}
+                                <div>
+                                    <label className="text-xs text-muted-foreground block mb-2 uppercase tracking-wider">Status</label>
+                                    {isEditing ? (
+                                        <select
+                                            value={editForm.status}
+                                            onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
+                                            className="w-full bg-secondary border border-border rounded py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50"
+                                        >
+                                            {STATUSES.map(status => (
+                                                <option key={status} value={status}>{status}</option>
+                                            ))}
+                                        </select>
+                                    ) : (
+                                        <div className="text-sm font-medium">{vessel.status}</div>
+                                    )}
+                                </div>
                             </div>
+                        </div>
+
+                        {/* Map */}
+                        <div className="bg-card border border-border rounded-lg overflow-hidden h-[300px] lg:h-full min-h-[300px] relative">
+                            <Map
+                                vessels={vessels}
+                                zones={zones}
+                                pois={pois}
+                                selectedVessel={vessel}
+                                onSelectVessel={(v) => navigate(`/vessels/${v.id}`)}
+                                showTracks={true}
+                            />
                         </div>
                     </div>
 
