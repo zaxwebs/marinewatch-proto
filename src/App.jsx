@@ -14,15 +14,19 @@ function App() {
     <SettingsProvider>
       <AppProvider>
         <BrowserRouter>
-          <Navigation />
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/zones" element={<Zones />} />
-            <Route path="/vessels" element={<Vessels />} />
-            <Route path="/vessels/:id" element={<VesselDetail />} />
-            <Route path="/poi" element={<PointsOfInterest />} />
-            <Route path="/settings" element={<Settings />} />
-          </Routes>
+          <div className="flex flex-col h-screen">
+            <Navigation />
+            <div className="flex-1 overflow-auto">
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/zones" element={<Zones />} />
+                <Route path="/vessels" element={<Vessels />} />
+                <Route path="/vessels/:id" element={<VesselDetail />} />
+                <Route path="/poi" element={<PointsOfInterest />} />
+                <Route path="/settings" element={<Settings />} />
+              </Routes>
+            </div>
+          </div>
         </BrowserRouter>
       </AppProvider>
     </SettingsProvider>

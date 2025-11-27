@@ -12,8 +12,8 @@ export default function Navigation() {
     ];
 
     return (
-        <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-[1500] bg-card border border-border rounded shadow-lg">
-            <div className="flex items-center">
+        <nav className="w-full bg-card border-b border-border">
+            <div className="flex items-center justify-end">
                 {navItems.map(({ to, label, icon: Icon }, index) => (
                     <NavLink
                         key={to}
