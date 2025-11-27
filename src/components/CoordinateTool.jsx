@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useMapEvents, useMap } from 'react-leaflet';
 
-export default function CoordinateTool({ active, onClose, onCursorChange }) {
+export default function CoordinateTool({ active, onClose, onCursorChange, locked, onLockToggle }) {
     const map = useMap();
 
     useEffect(() => {
@@ -9,32 +9,41 @@ export default function CoordinateTool({ active, onClose, onCursorChange }) {
             onCursorChange?.(null);
             map.getContainer().style.cursor = '';
         } else {
-            map.getContainer().style.cursor = 'crosshair';
+            map.getContainer().style.cursor = locked ? 'default' : 'crosshair';
         }
-    }, [active, map, onCursorChange]);
+    }, [active, map, onCursorChange, locked]);
 
     useEffect(() => {
         if (!active) return;
 
         const handleKeyDown = (e) => {
             if (e.key === 'Escape') {
-                onClose?.();
+                if (locked) {
+                    onLockToggle?.();
+                } else {
+                    onClose?.();
+                }
             }
         };
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [active, onClose]);
+    }, [active, onClose, locked, onLockToggle]);
 
     useMapEvents({
         mousemove(e) {
-            if (active) {
+            if (active && !locked) {
                 onCursorChange?.(e.latlng);
             }
         },
         mouseout() {
-            if (active) {
+            if (active && !locked) {
                 onCursorChange?.(null);
+            }
+        },
+        click() {
+            if (active) {
+                onLockToggle?.();
             }
         }
     });

@@ -2,8 +2,8 @@ import { Layers, Eye, EyeOff, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '../lib/utils';
 
-export default function LayerControl({ layers, onLayerToggle, className }) {
-    const [isOpen, setIsOpen] = useState(false);
+export default function LayerControl({ layers, onLayerToggle, className, isOpen, onToggle }) {
+    // const [isOpen, setIsOpen] = useState(false); // Removed internal state
     const [expandedGroups, setExpandedGroups] = useState(['zones', 'vessels']);
 
     const toggleGroup = (groupId) => {
@@ -48,7 +48,7 @@ export default function LayerControl({ layers, onLayerToggle, className }) {
     return (
         <div className={cn("flex flex-col items-end font-sans", className)}>
             <button
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={onToggle}
                 className={cn(
                     "bg-card border border-border p-2.5 rounded hover:bg-accent transition-all duration-200 relative group shadow-lg",
                     isOpen && "bg-accent"
@@ -61,7 +61,7 @@ export default function LayerControl({ layers, onLayerToggle, className }) {
                 <div className="bg-card border border-border mt-2 w-72 rounded overflow-hidden animate-in slide-in-from-top-2 fade-in duration-200 shadow-2xl">
                     <div className="p-3 border-b border-border flex justify-between items-center bg-card/50 backdrop-blur-sm">
                         <h3 className="font-semibold text-xs tracking-wide">Map Layers</h3>
-                        <button onClick={() => setIsOpen(false)} className="p-1 hover:bg-accent rounded transition-colors">
+                        <button onClick={onToggle} className="p-1 hover:bg-accent rounded transition-colors">
                             <ChevronDown size={14} />
                         </button>
                     </div>

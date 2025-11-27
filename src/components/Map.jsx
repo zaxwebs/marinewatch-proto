@@ -51,7 +51,7 @@ const createShipIcon = (heading, type, isSelected) => {
     });
 };
 
-export default function Map({ vessels, zones, pois = [], selectedVessel, onSelectVessel, replayMode, showTracks = true, showPois = true, measureMode = false, measurePoints = [], onMeasurePointsChange, onMeasureClose, coordinateMode = false, onCoordinateClose, onCursorCoordsChange }) {
+export default function Map({ vessels, zones, pois = [], selectedVessel, onSelectVessel, replayMode, showTracks = true, showPois = true, measureMode = false, measurePoints = [], onMeasurePointsChange, onMeasureClose, coordinateMode = false, onCoordinateClose, onCursorCoordsChange, coordinateLocked, onCoordinateLockToggle }) {
     return (
         <MapContainer
             center={[1.28, 103.85]}
@@ -66,7 +66,7 @@ export default function Map({ vessels, zones, pois = [], selectedVessel, onSelec
 
             <MapController selectedVessel={selectedVessel} />
             <MeasureTool active={measureMode} points={measurePoints} onPointsChange={onMeasurePointsChange} onClose={onMeasureClose} />
-            <CoordinateTool active={coordinateMode} onClose={onCoordinateClose} onCursorChange={onCursorCoordsChange} />
+            <CoordinateTool active={coordinateMode} onClose={onCoordinateClose} onCursorChange={onCursorCoordsChange} locked={coordinateLocked} onLockToggle={onCoordinateLockToggle} />
 
             {zones.map(zone => (
                 <Polygon

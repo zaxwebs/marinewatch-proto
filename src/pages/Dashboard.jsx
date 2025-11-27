@@ -17,10 +17,10 @@ export default function Dashboard() {
     const [replayVessel, setReplayVessel] = useState(null);
     const [replayPosition, setReplayPosition] = useState(null);
     const [layerVisibility, setLayerVisibility] = useState({});
-    const [isMeasureMode, setIsMeasureMode] = useState(false);
+    const [activeTool, setActiveTool] = useState(null); // 'measure', 'coordinate', 'layers', null
     const [measurePoints, setMeasurePoints] = useState([]);
-    const [isCoordinateMode, setIsCoordinateMode] = useState(false);
     const [cursorCoords, setCursorCoords] = useState(null);
+    const [isCoordinateLocked, setIsCoordinateLocked] = useState(false);
 
     const handleReplayStart = (vessel) => {
         setReplayVessel(vessel);
@@ -93,7 +93,7 @@ export default function Dashboard() {
     }, [measurePoints]);
 
     const handleMeasureClose = () => {
-        setIsMeasureMode(false);
+        setActiveTool(null);
         setMeasurePoints([]);
     };
 
@@ -106,8 +106,9 @@ export default function Dashboard() {
     };
 
     const handleCoordinateClose = () => {
-        setIsCoordinateMode(false);
+        setActiveTool(null);
         setCursorCoords(null);
+        setIsCoordinateLocked(false);
     };
 
     return (
@@ -131,41 +132,56 @@ export default function Dashboard() {
                     replayMode={!!replayVessel}
                     showTracks={showTracks}
                     showPois={showPois}
-                    measureMode={isMeasureMode}
+                    measureMode={activeTool === 'measure'}
                     measurePoints={measurePoints}
                     onMeasurePointsChange={setMeasurePoints}
                     onMeasureClose={handleMeasureClose}
-                    coordinateMode={isCoordinateMode}
+                    coordinateMode={activeTool === 'coordinate'}
                     onCoordinateClose={handleCoordinateClose}
                     onCursorCoordsChange={setCursorCoords}
+                    coordinateLocked={isCoordinateLocked}
+                    onCoordinateLockToggle={() => setIsCoordinateLocked(!isCoordinateLocked)}
                 />
                 <Notifications notifications={NOTIFICATIONS} />
 
                 <div className="absolute top-20 right-4 z-[1000] flex flex-col gap-2 items-end">
-                    <LayerControl layers={layers} onLayerToggle={handleLayerToggle} />
+                    <LayerControl
+                        layers={layers}
+                        onLayerToggle={handleLayerToggle}
+                        isOpen={activeTool === 'layers'}
+                        onToggle={() => setActiveTool(activeTool === 'layers' ? null : 'layers')}
+                    />
 
-                    {!isMeasureMode && (
-                        <button
-                            onClick={() => setIsMeasureMode(true)}
-                            className="bg-card border border-border p-2.5 rounded hover:bg-accent transition-all duration-200 shadow-lg text-foreground"
-                            title="Measure Distance"
-                        >
-                            <Ruler className="w-4 h-4" />
-                        </button>
-                    )}
+                    <button
+                        onClick={() => {
+                            if (activeTool === 'measure') {
+                                handleMeasureClose();
+                            } else {
+                                setActiveTool('measure');
+                            }
+                        }}
+                        className={`p-2.5 rounded transition-all duration-200 shadow-lg border ${activeTool === 'measure' ? 'bg-primary border-primary text-primary-foreground' : 'bg-card border-border text-foreground hover:bg-accent'}`}
+                        title="Measure Distance"
+                    >
+                        <Ruler className="w-4 h-4" />
+                    </button>
 
-                    {!isCoordinateMode && (
-                        <button
-                            onClick={() => setIsCoordinateMode(true)}
-                            className="bg-card border border-border p-2.5 rounded hover:bg-accent transition-all duration-200 shadow-lg text-foreground"
-                            title="Show Coordinates"
-                        >
-                            <Crosshair className="w-4 h-4" />
-                        </button>
-                    )}
+                    <button
+                        onClick={() => {
+                            if (activeTool === 'coordinate') {
+                                handleCoordinateClose();
+                            } else {
+                                setActiveTool('coordinate');
+                            }
+                        }}
+                        className={`p-2.5 rounded transition-all duration-200 shadow-lg border ${activeTool === 'coordinate' ? 'bg-primary border-primary text-primary-foreground' : 'bg-card border-border text-foreground hover:bg-accent'}`}
+                        title="Show Coordinates"
+                    >
+                        <Crosshair className="w-4 h-4" />
+                    </button>
                 </div>
 
-                {isMeasureMode && (
+                {activeTool === 'measure' && (
                     <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[1000]">
                         <MeasureControl
                             distance={totalMeasureDistance}
@@ -175,12 +191,13 @@ export default function Dashboard() {
                         />
                     </div>
                 )}
-                {isCoordinateMode && (
+                {activeTool === 'coordinate' && (
                     <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[1000]">
                         <CoordinateControl
                             lat={cursorCoords?.lat ?? null}
                             lng={cursorCoords?.lng ?? null}
                             onClose={handleCoordinateClose}
+                            isLocked={isCoordinateLocked}
                         />
                     </div>
                 )}
