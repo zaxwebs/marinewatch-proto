@@ -7,6 +7,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { createPoiMarker } from '../lib/mapUtils';
 
 import MeasureTool from './MeasureTool';
+import CoordinateTool from './CoordinateTool';
 
 // Fix for default icons
 delete L.Icon.Default.prototype._getIconUrl;
@@ -50,7 +51,7 @@ const createShipIcon = (heading, type, isSelected) => {
     });
 };
 
-export default function Map({ vessels, zones, pois = [], selectedVessel, onSelectVessel, replayMode, showTracks = true, showPois = true, measureMode = false, measurePoints = [], onMeasurePointsChange, onMeasureClose }) {
+export default function Map({ vessels, zones, pois = [], selectedVessel, onSelectVessel, replayMode, showTracks = true, showPois = true, measureMode = false, measurePoints = [], onMeasurePointsChange, onMeasureClose, coordinateMode = false, onCoordinateClose, onCursorCoordsChange }) {
     return (
         <MapContainer
             center={[1.28, 103.85]}
@@ -65,6 +66,7 @@ export default function Map({ vessels, zones, pois = [], selectedVessel, onSelec
 
             <MapController selectedVessel={selectedVessel} />
             <MeasureTool active={measureMode} points={measurePoints} onPointsChange={onMeasurePointsChange} onClose={onMeasureClose} />
+            <CoordinateTool active={coordinateMode} onClose={onCoordinateClose} onCursorChange={onCursorCoordsChange} />
 
             {zones.map(zone => (
                 <Polygon

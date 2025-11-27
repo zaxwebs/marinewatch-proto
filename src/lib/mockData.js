@@ -7,25 +7,55 @@ export const ZONES = [{ "id": "z1764142358687", "name": "Zone 1", "type": "ancho
 
 export const POIS = [{ "id": "p1764219863307", "name": "Southern Islands", "type": "anchorage", "color": "#f59e0b", "description": "General point of interest", "lat": 1.2341498543325267, "lng": 103.82749557495119 }, { "id": "p1764219917887", "name": "Western Islands", "type": "general", "color": "#3b82f6", "description": "General point of interest", "lat": 1.2166443983257476, "lng": 103.77101898193361 }, { "id": "p1764220020891", "name": "Riau Islands", "type": "landmark", "color": "#8b5cf6", "description": "General point of interest", "lat": 1.1723653886524505, "lng": 103.83522033691408 }];
 
-const generateHistory = (startLat, startLng, heading, speed, count = 20) => {
+const generateHistory = (
+    startLat,
+    startLng,
+    heading,
+    speed,
+    count = 20
+) => {
     const history = [];
     let currentLat = startLat;
     let currentLng = startLng;
 
+    let currentHeading = heading;
+    let currentSpeed = speed;
+
     for (let i = 0; i < count; i++) {
+
+        // Save point
         history.push({
             lat: currentLat,
             lng: currentLng,
             timestamp: subMinutes(new Date(), i * 10).toISOString(),
-            speed: speed + (Math.random() - 0.5) * 2,
-            heading: heading + (Math.random() - 0.5) * 10
+            speed: currentSpeed,
+            heading: currentHeading
         });
-        // Move backwards
-        currentLat -= (speed * 0.0001) * Math.cos(heading * Math.PI / 180);
-        currentLng -= (speed * 0.0001) * Math.sin(heading * Math.PI / 180);
+
+        // --- REALISTIC MOVEMENT ADJUSTMENTS ---
+
+        // Smooth speed drift (not totally random)
+        currentSpeed += (Math.random() - 0.5) * 0.5; // minor change
+        if (currentSpeed < 0) currentSpeed = 0;
+
+        // Heading changes produce curves
+        const curveAmount = (Math.random() - 0.5) * 5; // small curve
+        currentHeading += curveAmount;
+
+        // Convert to radians
+        const rad = currentHeading * Math.PI / 180;
+
+        // Movement distance
+        const stepDistance = currentSpeed * 0.0001;
+
+        // Apply movement backwards in time
+        currentLat -= stepDistance * Math.cos(rad);
+        currentLng -= stepDistance * Math.sin(rad);
     }
+
     return history.reverse();
 };
+
 
 export const VESSELS = [
     {

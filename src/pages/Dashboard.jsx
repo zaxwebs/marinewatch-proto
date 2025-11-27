@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react';
-import { Ruler } from 'lucide-react';
+import { Ruler, Crosshair } from 'lucide-react';
 import Map from '../components/Map';
 import Sidebar from '../components/Sidebar';
 import Notifications from '../components/Notifications';
 import ReplayBar from '../components/ReplayBar';
 import LayerControl from '../components/LayerControl';
 import MeasureControl from '../components/MeasureControl';
+import CoordinateControl from '../components/CoordinateControl';
 import { NOTIFICATIONS } from '../lib/mockData';
 import { useApp } from '../context/AppContext';
 
@@ -18,6 +19,8 @@ export default function Dashboard() {
     const [layerVisibility, setLayerVisibility] = useState({});
     const [isMeasureMode, setIsMeasureMode] = useState(false);
     const [measurePoints, setMeasurePoints] = useState([]);
+    const [isCoordinateMode, setIsCoordinateMode] = useState(false);
+    const [cursorCoords, setCursorCoords] = useState(null);
 
     const handleReplayStart = (vessel) => {
         setReplayVessel(vessel);
@@ -102,6 +105,11 @@ export default function Dashboard() {
         setMeasurePoints([]);
     };
 
+    const handleCoordinateClose = () => {
+        setIsCoordinateMode(false);
+        setCursorCoords(null);
+    };
+
     return (
         <div className="flex h-screen w-full overflow-hidden bg-background text-foreground relative">
             <Sidebar
@@ -127,6 +135,9 @@ export default function Dashboard() {
                     measurePoints={measurePoints}
                     onMeasurePointsChange={setMeasurePoints}
                     onMeasureClose={handleMeasureClose}
+                    coordinateMode={isCoordinateMode}
+                    onCoordinateClose={handleCoordinateClose}
+                    onCursorCoordsChange={setCursorCoords}
                 />
                 <Notifications notifications={NOTIFICATIONS} />
 
@@ -142,6 +153,16 @@ export default function Dashboard() {
                             <Ruler className="w-4 h-4" />
                         </button>
                     )}
+
+                    {!isCoordinateMode && (
+                        <button
+                            onClick={() => setIsCoordinateMode(true)}
+                            className="bg-card border border-border p-2.5 rounded hover:bg-accent transition-all duration-200 shadow-lg text-foreground"
+                            title="Show Coordinates"
+                        >
+                            <Crosshair className="w-4 h-4" />
+                        </button>
+                    )}
                 </div>
 
                 {isMeasureMode && (
@@ -151,6 +172,15 @@ export default function Dashboard() {
                             onUndo={handleMeasureUndo}
                             onClear={handleMeasureClear}
                             onClose={handleMeasureClose}
+                        />
+                    </div>
+                )}
+                {isCoordinateMode && (
+                    <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[1000]">
+                        <CoordinateControl
+                            lat={cursorCoords?.lat ?? null}
+                            lng={cursorCoords?.lng ?? null}
+                            onClose={handleCoordinateClose}
                         />
                     </div>
                 )}
