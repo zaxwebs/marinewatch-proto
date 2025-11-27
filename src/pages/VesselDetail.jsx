@@ -3,8 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Edit2, Save, X, Navigation, Anchor, MapPin } from 'lucide-react';
 import Map from '../components/Map';
 import { useApp } from '../context/AppContext';
+import { useSettings } from '../context/SettingsContext';
 import { cn } from '../lib/utils';
-import { getDistanceKm } from '../lib/geoUtils';
+import { getDistanceKm, convertDistance } from '../lib/geoUtils';
 
 const VESSEL_TYPES = ['Cargo', 'Tanker', 'Fishing', 'Passenger', 'Tug'];
 const STATUSES = ['Moored', 'Moving', 'Anchored', 'Drifting'];
@@ -13,16 +14,20 @@ export default function VesselDetail() {
     const { id } = useParams();
     const navigate = useNavigate();
     const { vessels, updateVessel, zones, pois } = useApp();
+    const { settings } = useSettings();
 
     const vessel = vessels.find(v => v.id === id);
     const [isEditing, setIsEditing] = useState(false);
     const [editForm, setEditForm] = useState(vessel || {});
 
     // Calculate nearest POI
-    const nearestPoi = vessel ? pois.map(poi => ({
-        ...poi,
-        distance: getDistanceKm(vessel.lat, vessel.lng, poi.lat, poi.lng) * 0.539957
-    })).sort((a, b) => a.distance - b.distance)[0] : null;
+    const nearestPoi = vessel ? pois.map(poi => {
+        const distanceKm = getDistanceKm(vessel.lat, vessel.lng, poi.lat, poi.lng);
+        return {
+            ...poi,
+            distance: convertDistance(distanceKm, settings.distanceUnit)
+        };
+    }).sort((a, b) => a.distance - b.distance)[0] : null;
 
     if (!vessel) {
         return (
@@ -157,7 +162,7 @@ export default function VesselDetail() {
                             {nearestPoi ? (
                                 <div>
                                     <div className="text-sm font-medium">{nearestPoi.name}</div>
-                                    <div className="text-xs text-muted-foreground font-mono">{nearestPoi.distance.toFixed(1)} nm</div>
+                                    <div className="text-xs text-muted-foreground font-mono">{nearestPoi.distance.toFixed(1)} {settings.distanceUnit}</div>
                                 </div>
                             ) : (
                                 <div className="text-sm text-muted-foreground">No POIs</div>

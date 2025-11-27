@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Ship, MapPin } from 'lucide-react';
+import { Ship, MapPin, Settings } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 export default function Navigation() {
@@ -8,6 +8,7 @@ export default function Navigation() {
         { to: '/vessels', label: 'Vessels', icon: Ship },
         { to: '/zones', label: 'Zones', icon: MapPin },
         { to: '/poi', label: 'Points of Interest', icon: MapPin },
+        { to: '/settings', label: 'Settings', icon: Settings },
     ];
 
     return (

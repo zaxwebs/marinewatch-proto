@@ -1,11 +1,14 @@
 import { X, RotateCcw, Trash2 } from 'lucide-react';
+import { useSettings } from '../context/SettingsContext';
+import { convertDistance } from '../lib/geoUtils';
 
 export default function MeasureControl({ distance, onUndo, onClear, onClose }) {
+    const { settings } = useSettings();
+
     const formatDistance = (meters) => {
-        if (meters >= 1000) {
-            return `${(meters / 1000).toFixed(2)} km`;
-        }
-        return `${Math.round(meters)} m`;
+        const km = meters / 1000;
+        const converted = convertDistance(km, settings.distanceUnit);
+        return `${converted.toFixed(2)} ${settings.distanceUnit}`;
     };
 
     return (

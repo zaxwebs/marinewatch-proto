@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Ship, Navigation, ChevronRight, MapPin } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { useSettings } from '../context/SettingsContext';
 import { cn } from '../lib/utils';
 import { getClosestPoi } from '../lib/geoUtils';
 
 export default function Vessels() {
     const navigate = useNavigate();
     const { vessels, pois } = useApp();
+    const { settings } = useSettings();
     const [searchQuery, setSearchQuery] = useState('');
     const [filterType, setFilterType] = useState('all');
     const [filterStatus, setFilterStatus] = useState('all');
@@ -128,7 +130,7 @@ export default function Vessels() {
                                                     </span>
                                                     <span className="font-medium truncate ml-2" title={closest.name}>
                                                         {closest.name.length > 15 ? closest.name.slice(0, 15) + '...' : closest.name}
-                                                        <span className="text-muted-foreground ml-1">({closest.distance.toFixed(1)} km)</span>
+                                                        <span className="text-muted-foreground ml-1">({closest.distance.toFixed(1)} {settings.distanceUnit})</span>
                                                     </span>
                                                 </div>
                                             ) : null;

@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useMapEvents, Polyline, Marker, Tooltip, useMap } from 'react-leaflet';
+import { useSettings } from '../context/SettingsContext';
+import { convertDistance } from '../lib/geoUtils';
 import L from 'leaflet';
 
 export default function MeasureTool({ active, points, onPointsChange, onClose }) {
+    const { settings } = useSettings();
     const [cursorPos, setCursorPos] = useState(null);
     const map = useMap();
 
@@ -53,10 +56,9 @@ export default function MeasureTool({ active, points, onPointsChange, onClose })
     });
 
     const formatDistance = (meters) => {
-        if (meters >= 1000) {
-            return `${(meters / 1000).toFixed(2)} km`;
-        }
-        return `${Math.round(meters)} m`;
+        const km = meters / 1000;
+        const converted = convertDistance(km, settings.distanceUnit);
+        return `${converted.toFixed(2)} ${settings.distanceUnit}`;
     };
 
     const getCursorDistance = () => {

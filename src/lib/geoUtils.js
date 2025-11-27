@@ -19,3 +19,33 @@ export function getClosestPoi(vessel, pois) {
     }
     return closest;
 }
+
+/**
+ * Convert distance from kilometers to specified unit
+ * @param {number} km - Distance in kilometers
+ * @param {string} toUnit - Target unit: 'km', 'nm' (nautical miles), or 'mi' (statute miles)
+ * @returns {number} Converted distance
+ */
+export function convertDistance(km, toUnit) {
+    switch (toUnit) {
+        case 'nm':
+            return km * 0.539957; // km to nautical miles
+        case 'mi':
+            return km * 0.621371; // km to statute miles
+        case 'km':
+        default:
+            return km;
+    }
+}
+
+/**
+ * Format distance with appropriate unit label
+ * @param {number} km - Distance in kilometers
+ * @param {string} unit - Display unit: 'km', 'nm', or 'mi'
+ * @param {number} decimals - Number of decimal places (default: 1)
+ * @returns {string} Formatted distance string (e.g., "5.4 nm")
+ */
+export function formatDistance(km, unit = 'nm', decimals = 1) {
+    const converted = convertDistance(km, unit);
+    return `${converted.toFixed(decimals)} ${unit}`;
+}

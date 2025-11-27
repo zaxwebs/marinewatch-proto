@@ -1,9 +1,11 @@
 import { Search, Ship, Navigation, X, Play, ChevronDown, MapPin } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { getClosestPoi } from '../lib/geoUtils';
+import { useSettings } from '../context/SettingsContext';
 import { useState } from 'react';
 
 export default function Sidebar({ vessels, pois = [], selectedVessel, onSelectVessel, onReplayStart, isOpen, setIsOpen }) {
+    const { settings } = useSettings();
     const [searchQuery, setSearchQuery] = useState('');
     const [expandedVessel, setExpandedVessel] = useState(null);
 
@@ -98,7 +100,7 @@ export default function Sidebar({ vessels, pois = [], selectedVessel, onSelectVe
                                         <div className="flex items-center gap-1 text-muted-foreground" title={closest.name}>
                                             <MapPin className="w-3 h-3 shrink-0" />
                                             <span className="truncate max-w-[80px]">{closest.name}</span>
-                                            <span className="text-[10px] shrink-0">({closest.distance.toFixed(1)} km)</span>
+                                            <span className="text-[10px] shrink-0">({closest.distance.toFixed(1)} {settings.distanceUnit})</span>
                                         </div>
                                     ) : null;
                                 })()}
