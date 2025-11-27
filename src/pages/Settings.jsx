@@ -29,17 +29,17 @@ export default function Settings() {
                 </div>
 
                 {/* Content */}
-                <div className="max-w-4xl mx-auto p-6 space-y-6">
+                <div className="max-w-4xl mx-auto p-4 space-y-4">
                     {/* Unit Preferences Section */}
                     <div className="bg-card border border-border rounded-lg overflow-hidden">
-                        <div className="border-b border-border bg-card/50 px-6 py-4">
+                        <div className="border-b border-border bg-card/50 px-4 py-3">
                             <h2 className="text-lg font-semibold">Unit Preferences</h2>
                             <p className="text-sm text-muted-foreground mt-1">
                                 Configure measurement units used throughout the application
                             </p>
                         </div>
 
-                        <div className="p-6">
+                        <div className="p-4">
                             {/* Distance Unit Setting */}
                             <div>
                                 <label className="text-sm font-medium mb-3 block">
