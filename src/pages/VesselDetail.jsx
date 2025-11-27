@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Edit2, Save, X, Navigation, Anchor, MapPin, Clock } from 'lucide-react';
+import { ArrowLeft, Edit2, Save, X, Navigation, Anchor, MapPin } from 'lucide-react';
 import Map from '../components/Map';
 import { useApp } from '../context/AppContext';
 import { cn } from '../lib/utils';
+import { getDistanceKm } from '../lib/geoUtils';
 
 const VESSEL_TYPES = ['Cargo', 'Tanker', 'Fishing', 'Passenger', 'Tug'];
 const STATUSES = ['Moored', 'Moving', 'Anchored', 'Drifting'];
@@ -16,6 +17,12 @@ export default function VesselDetail() {
     const vessel = vessels.find(v => v.id === id);
     const [isEditing, setIsEditing] = useState(false);
     const [editForm, setEditForm] = useState(vessel || {});
+
+    // Calculate nearest POI
+    const nearestPoi = vessel ? pois.map(poi => ({
+        ...poi,
+        distance: getDistanceKm(vessel.lat, vessel.lng, poi.lat, poi.lng) * 0.539957
+    })).sort((a, b) => a.distance - b.distance)[0] : null;
 
     if (!vessel) {
         return (
@@ -142,12 +149,19 @@ export default function VesselDetail() {
 
                         <div className="bg-card border border-border rounded-lg p-4">
                             <div className="flex items-center gap-3 mb-2">
-                                <div className="w-8 h-8 rounded bg-orange-500/10 flex items-center justify-center">
-                                    <Clock className="w-4 h-4 text-orange-500" />
+                                <div className="w-8 h-8 rounded flex items-center justify-center" style={{ backgroundColor: nearestPoi ? `${nearestPoi.color}20` : '#f59e0b20' }}>
+                                    <MapPin className="w-4 h-4" style={{ color: nearestPoi?.color || '#f59e0b' }} />
                                 </div>
-                                <span className="text-xs text-muted-foreground uppercase tracking-wider">ETA</span>
+                                <span className="text-xs text-muted-foreground uppercase tracking-wider">Nearest POI</span>
                             </div>
-                            <div className="text-sm">{vessel.eta !== '-' ? new Date(vessel.eta).toLocaleDateString() : '-'}</div>
+                            {nearestPoi ? (
+                                <div>
+                                    <div className="text-sm font-medium">{nearestPoi.name}</div>
+                                    <div className="text-xs text-muted-foreground font-mono">{nearestPoi.distance.toFixed(1)} nm</div>
+                                </div>
+                            ) : (
+                                <div className="text-sm text-muted-foreground">No POIs</div>
+                            )}
                         </div>
                     </div>
 
