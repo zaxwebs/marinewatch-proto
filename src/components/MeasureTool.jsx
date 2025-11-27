@@ -99,7 +99,6 @@ export default function MeasureTool({ active, points, onPointsChange, onClose })
                     permanent
                     direction="right"
                     offset={[10, 0]}
-                    className="font-mono font-bold text-sm bg-background/90 backdrop-blur border border-border text-foreground px-2 py-1 shadow-md rounded"
                 >
                     {points.length === 0 ? 'Click to start' : `+${formatDistance(cursorDistance)}`}
                 </Tooltip>
