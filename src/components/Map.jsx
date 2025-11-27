@@ -6,6 +6,8 @@ import { Navigation } from 'lucide-react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { createPoiMarker } from '../lib/mapUtils';
 
+import MeasureTool from './MeasureTool';
+
 // Fix for default icons
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -48,7 +50,7 @@ const createShipIcon = (heading, type, isSelected) => {
     });
 };
 
-export default function Map({ vessels, zones, pois = [], selectedVessel, onSelectVessel, replayMode, showTracks = true, showPois = true }) {
+export default function Map({ vessels, zones, pois = [], selectedVessel, onSelectVessel, replayMode, showTracks = true, showPois = true, measureMode = false, measurePoints = [], onMeasurePointsChange, onMeasureClose }) {
     return (
         <MapContainer
             center={[1.28, 103.85]}
@@ -62,6 +64,7 @@ export default function Map({ vessels, zones, pois = [], selectedVessel, onSelec
             />
 
             <MapController selectedVessel={selectedVessel} />
+            <MeasureTool active={measureMode} points={measurePoints} onPointsChange={onMeasurePointsChange} onClose={onMeasureClose} />
 
             {zones.map(zone => (
                 <Polygon

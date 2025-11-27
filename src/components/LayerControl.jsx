@@ -2,7 +2,7 @@ import { Layers, Eye, EyeOff, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '../lib/utils';
 
-export default function LayerControl({ layers, onLayerToggle }) {
+export default function LayerControl({ layers, onLayerToggle, className }) {
     const [isOpen, setIsOpen] = useState(false);
     const [expandedGroups, setExpandedGroups] = useState(['zones', 'vessels']);
 
@@ -46,7 +46,7 @@ export default function LayerControl({ layers, onLayerToggle }) {
     ].filter(group => group.layers.length > 0);
 
     return (
-        <div className="absolute top-20 right-4 z-[1000] flex flex-col items-end font-sans">
+        <div className={cn("flex flex-col items-end font-sans", className)}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn(

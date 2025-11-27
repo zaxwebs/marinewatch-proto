@@ -5,6 +5,8 @@ const STATUSES = ['Moored', 'Moving', 'Anchored', 'Drifting'];
 
 export const ZONES = [{ "id": "z1764142358687", "name": "Zone 1", "type": "anchorage", "color": "#f59e0b", "description": "Commercial port area", "coordinates": [[1.3038272759700005, 103.99658203125001], [1.2928437684040126, 103.92929077148439], [1.257833522873487, 103.86062622070314], [1.1534865266428573, 103.92105102539064], [1.1501398061581674, 103.98327827453613], [1.182834521027629, 103.9918613433838], [1.2104659748842528, 104.00825500488283]] }, { "id": "z1764144093764", "name": "Zone 2", "type": "port", "color": "#10b981", "description": "Commercial port area", "coordinates": [[1.3254509160659214, 103.56622695922852], [1.2576619028552396, 103.52949142456056], [1.2303741774326145, 103.59146118164064], [1.3058866783157643, 103.60982894897462]] }];
 
+export const POIS = [{ "id": "p1764219863307", "name": "Southern Islands", "type": "anchorage", "color": "#f59e0b", "description": "General point of interest", "lat": 1.2341498543325267, "lng": 103.82749557495119 }, { "id": "p1764219917887", "name": "Western Islands", "type": "general", "color": "#3b82f6", "description": "General point of interest", "lat": 1.2166443983257476, "lng": 103.77101898193361 }, { "id": "p1764220020891", "name": "Riau Islands", "type": "landmark", "color": "#8b5cf6", "description": "General point of interest", "lat": 1.1723653886524505, "lng": 103.83522033691408 }];
+
 const generateHistory = (startLat, startLng, heading, speed, count = 20) => {
     const history = [];
     let currentLat = startLat;

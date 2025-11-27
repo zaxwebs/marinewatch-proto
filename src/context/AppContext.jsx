@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { ZONES as INITIAL_ZONES, VESSELS as INITIAL_VESSELS } from '../lib/mockData';
+import { ZONES as INITIAL_ZONES, VESSELS as INITIAL_VESSELS, POIS as INITIAL_POIS } from '../lib/mockData';
 
 const AppContext = createContext();
 
@@ -52,10 +52,10 @@ export function AppProvider({ children }) {
         localStorage.removeItem('marinetrack-vessels');
     };
 
-    // Initialize POIs from localStorage or use empty array
+    // Initialize POIs from localStorage or use default
     const [pois, setPois] = useState(() => {
         const savedPois = localStorage.getItem('marinetrack-pois');
-        return savedPois ? JSON.parse(savedPois) : [];
+        return savedPois ? JSON.parse(savedPois) : INITIAL_POIS;
     });
 
     // Save POIs to localStorage whenever they change
@@ -76,7 +76,7 @@ export function AppProvider({ children }) {
     };
 
     const resetPois = () => {
-        setPois([]);
+        setPois(INITIAL_POIS);
         localStorage.removeItem('marinetrack-pois');
     };
 

@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import { Ruler } from 'lucide-react';
 import Map from '../components/Map';
 import Sidebar from '../components/Sidebar';
 import Notifications from '../components/Notifications';
 import ReplayBar from '../components/ReplayBar';
 import LayerControl from '../components/LayerControl';
+import MeasureControl from '../components/MeasureControl';
 import { NOTIFICATIONS } from '../lib/mockData';
 import { useApp } from '../context/AppContext';
 
@@ -14,6 +16,8 @@ export default function Dashboard() {
     const [replayVessel, setReplayVessel] = useState(null);
     const [replayPosition, setReplayPosition] = useState(null);
     const [layerVisibility, setLayerVisibility] = useState({});
+    const [isMeasureMode, setIsMeasureMode] = useState(false);
+    const [measurePoints, setMeasurePoints] = useState([]);
 
     const handleReplayStart = (vessel) => {
         setReplayVessel(vessel);
@@ -76,6 +80,28 @@ export default function Dashboard() {
     const showTracks = layerVisibility['vessel-tracks'] !== false;
     const showPois = layerVisibility['pois'] !== false;
 
+    const totalMeasureDistance = useMemo(() => {
+        if (measurePoints.length < 2) return 0;
+        let dist = 0;
+        for (let i = 0; i < measurePoints.length - 1; i++) {
+            dist += measurePoints[i].distanceTo(measurePoints[i + 1]);
+        }
+        return dist;
+    }, [measurePoints]);
+
+    const handleMeasureClose = () => {
+        setIsMeasureMode(false);
+        setMeasurePoints([]);
+    };
+
+    const handleMeasureUndo = () => {
+        setMeasurePoints(prev => prev.slice(0, -1));
+    };
+
+    const handleMeasureClear = () => {
+        setMeasurePoints([]);
+    };
+
     return (
         <div className="flex h-screen w-full overflow-hidden bg-background text-foreground relative">
             <Sidebar
@@ -97,9 +123,37 @@ export default function Dashboard() {
                     replayMode={!!replayVessel}
                     showTracks={showTracks}
                     showPois={showPois}
+                    measureMode={isMeasureMode}
+                    measurePoints={measurePoints}
+                    onMeasurePointsChange={setMeasurePoints}
+                    onMeasureClose={handleMeasureClose}
                 />
                 <Notifications notifications={NOTIFICATIONS} />
-                <LayerControl layers={layers} onLayerToggle={handleLayerToggle} />
+
+                <div className="absolute top-20 right-4 z-[1000] flex flex-col gap-2 items-end">
+                    <LayerControl layers={layers} onLayerToggle={handleLayerToggle} />
+
+                    {!isMeasureMode && (
+                        <button
+                            onClick={() => setIsMeasureMode(true)}
+                            className="bg-card border border-border p-2.5 rounded hover:bg-accent transition-all duration-200 shadow-lg text-foreground"
+                            title="Measure Distance"
+                        >
+                            <Ruler className="w-4 h-4" />
+                        </button>
+                    )}
+                </div>
+
+                {isMeasureMode && (
+                    <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[1000]">
+                        <MeasureControl
+                            distance={totalMeasureDistance}
+                            onUndo={handleMeasureUndo}
+                            onClear={handleMeasureClear}
+                            onClose={handleMeasureClose}
+                        />
+                    </div>
+                )}
                 {replayVessel && (
                     <ReplayBar
                         vessel={replayVessel}
