@@ -51,13 +51,13 @@ function ReplayMapController({ replayVessel, replayMode }) {
 }
 
 const createShipIcon = (heading, type, isSelected) => {
-    const color = isSelected ? 'hsl(217, 91%, 60%)' : 'hsl(215, 10%, 60%)';
+    const color = isSelected ? 'hsl(217, 91%, 60%)' : 'hsl(215, 10%, 80%)';
     const iconMarkup = renderToStaticMarkup(
         <div className={`relative transition-all duration-300 ${isSelected ? 'scale-125' : ''}`} style={{ transform: `rotate(${heading - 45}deg)` }}>
             <Navigation
                 size={20}
                 fill={color}
-                color={isSelected ? '#fff' : 'hsl(220, 13%, 11%)'}
+                color='#fff'
                 strokeWidth={1.5}
             />
         </div>
