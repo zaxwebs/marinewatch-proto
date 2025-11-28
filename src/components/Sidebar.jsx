@@ -16,8 +16,8 @@ export default function Sidebar({ vessels, pois = [], selectedVessel, onSelectVe
 
     return (
         <div className={cn(
-            "absolute left-0 top-0 bottom-0 w-80 z-10 flex flex-col transition-transform duration-300 ease-in-out bg-card border-r border-border",
-            isOpen ? "translate-x-0" : "-translate-x-full"
+            "z-10 flex flex-col transition-all duration-300 ease-in-out bg-card border-r border-border overflow-hidden",
+            isOpen ? "w-80" : "w-0 border-r-0"
         )}>
             {/* Header */}
             <div className="p-4 border-b border-border bg-card/50 backdrop-blur-sm">

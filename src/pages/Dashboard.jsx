@@ -114,7 +114,7 @@ export default function Dashboard() {
     };
 
     return (
-        <div className="flex h-screen w-full overflow-hidden bg-background text-foreground relative">
+        <div className="flex h-full w-full overflow-hidden bg-background text-foreground relative">
             <Sidebar
                 vessels={vessels}
                 pois={pois}

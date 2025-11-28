@@ -214,7 +214,7 @@ export default function PointsOfInterest() {
     const currentPoiColor = newPoiForm.customColor ? newPoiForm.color : POI_TYPES.find((t) => t.value === newPoiForm.type)?.color || '#3b82f6';
 
     return (
-        <div className="flex h-screen w-full overflow-hidden bg-background text-foreground">
+        <div className="flex h-full w-full overflow-hidden bg-background text-foreground">
             {/* Confirm Delete Dialog */}
             {confirmDelete && (
                 <div className="fixed inset-0 z-[1001] flex items-center justify-center bg-black/50">

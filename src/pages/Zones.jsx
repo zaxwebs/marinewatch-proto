@@ -347,7 +347,7 @@ export default function Zones() {
     const currentZoneColor = newZoneForm.customColor ? newZoneForm.color : ZONE_TYPES.find((t) => t.value === newZoneForm.type)?.color || '#3b82f6';
 
     return (
-        <div className="flex h-screen w-full overflow-hidden bg-background text-foreground">
+        <div className="flex h-full w-full overflow-hidden bg-background text-foreground">
             {/* Confirm Delete Dialog */}
             {confirmDelete && (
                 <div className="fixed inset-0 z-[1001] flex items-center justify-center bg-black/50">
@@ -433,7 +433,7 @@ export default function Zones() {
                             >
                                 <div className="flex items-center justify-between mb-2">
                                     <div className="flex items-center gap-2">
-                                        <div 
+                                        <div
                                             className="w-8 h-8 rounded flex items-center justify-center shrink-0"
                                             style={{ backgroundColor: `${zone.color}20` }}
                                         >
@@ -444,8 +444,8 @@ export default function Zones() {
                                             <p className="text-[11px] text-muted-foreground capitalize">{zoneType?.label || zone.type}</p>
                                         </div>
                                     </div>
-                                    <button 
-                                        onClick={(e) => { e.stopPropagation(); handleEdit(zone); }} 
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); handleEdit(zone); }}
                                         className="p-1 text-muted-foreground hover:text-primary hover:bg-accent rounded transition-colors shrink-0"
                                     >
                                         <Edit2 size={14} />
@@ -459,15 +459,15 @@ export default function Zones() {
                                     </div>
 
                                     <div className="flex items-center justify-between pt-1.5 border-t border-border">
-                                        <button 
-                                            onClick={(e) => { e.stopPropagation(); setMapFitBounds(zone.coordinates); }} 
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); setMapFitBounds(zone.coordinates); }}
                                             className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
                                         >
                                             <Maximize2 size={11} />
                                             <span>Zoom</span>
                                         </button>
-                                        <button 
-                                            onClick={(e) => { e.stopPropagation(); setConfirmDelete(zone.id); }} 
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); setConfirmDelete(zone.id); }}
                                             className="text-muted-foreground hover:text-destructive transition-colors flex items-center gap-1"
                                         >
                                             <Trash2 size={11} />
@@ -568,7 +568,7 @@ export default function Zones() {
                                 </div>
                             </div>
 
-                            </div>
+                        </div>
 
                         {/* Footer */}
                         <div className="p-3 border-t border-border flex gap-2 shrink-0">

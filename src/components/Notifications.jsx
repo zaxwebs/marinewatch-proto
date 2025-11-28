@@ -7,7 +7,7 @@ export default function Notifications({ notifications }) {
     const unreadCount = notifications.filter(n => !n.read).length;
 
     return (
-        <div className="absolute top-4 right-4 z-[1000] flex flex-col items-end font-sans">
+        <div className="absolute top-4 right-4 z-[2000] flex flex-col items-end font-sans">
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn(
