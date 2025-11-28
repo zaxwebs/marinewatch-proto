@@ -19,6 +19,7 @@ export default function Dashboard() {
     const [layerVisibility, setLayerVisibility] = useState({});
     const [activeTool, setActiveTool] = useState(null); // 'measure', 'coordinate', 'layers', null
     const [measurePoints, setMeasurePoints] = useState([]);
+    const [isMeasureLocked, setIsMeasureLocked] = useState(false);
     const [cursorCoords, setCursorCoords] = useState(null);
     const [isCoordinateLocked, setIsCoordinateLocked] = useState(false);
 
@@ -95,6 +96,7 @@ export default function Dashboard() {
     const handleMeasureClose = () => {
         setActiveTool(null);
         setMeasurePoints([]);
+        setIsMeasureLocked(false);
     };
 
     const handleMeasureUndo = () => {
@@ -136,6 +138,8 @@ export default function Dashboard() {
                     measurePoints={measurePoints}
                     onMeasurePointsChange={setMeasurePoints}
                     onMeasureClose={handleMeasureClose}
+                    measureLocked={isMeasureLocked}
+                    onMeasureLockToggle={() => setIsMeasureLocked(!isMeasureLocked)}
                     coordinateMode={activeTool === 'coordinate'}
                     onCoordinateClose={handleCoordinateClose}
                     onCursorCoordsChange={setCursorCoords}
