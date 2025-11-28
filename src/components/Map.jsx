@@ -30,7 +30,7 @@ function MapController({ selectedVessel }) {
 const createShipIcon = (heading, type, isSelected) => {
     const color = isSelected ? 'hsl(217, 91%, 60%)' : 'hsl(215, 10%, 60%)';
     const iconMarkup = renderToStaticMarkup(
-        <div className={`relative transition-all duration-300 ${isSelected ? 'scale-125' : ''}`} style={{ transform: `rotate(${heading}deg)` }}>
+        <div className={`relative transition-all duration-300 ${isSelected ? 'scale-125' : ''}`} style={{ transform: `rotate(${heading - 45}deg)` }}>
             <Navigation
                 size={20}
                 fill={color}
