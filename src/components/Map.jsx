@@ -50,24 +50,29 @@ function ReplayMapController({ replayVessel, replayMode }) {
     return null;
 }
 
-const createShipIcon = (heading, type, isSelected) => {
+const createShipIcon = (heading, type, isSelected, vesselName) => {
     const color = isSelected ? 'hsl(217, 91%, 60%)' : 'hsl(215, 10%, 80%)';
     const iconMarkup = renderToStaticMarkup(
-        <div className={`relative transition-all duration-300 ${isSelected ? 'scale-125' : ''}`} style={{ transform: `rotate(${heading - 45}deg)` }}>
-            <Navigation
-                size={20}
-                fill={color}
-                color='#fff'
-                strokeWidth={1.5}
-            />
+        <div className="flex flex-col items-center">
+            <div className={`relative transition-all duration-300 ${isSelected ? 'scale-125' : ''}`} style={{ transform: `rotate(${heading - 45}deg)` }}>
+                <Navigation
+                    size={20}
+                    fill={color}
+                    color='#fff'
+                    strokeWidth={1.5}
+                />
+            </div>
+            <div className="text-[9px] font-medium text-white mt-0.5 whitespace-nowrap" style={{ textShadow: '0 0 3px rgba(0,0,0,0.8), 0 0 2px rgba(0,0,0,0.8)' }}>
+                {vesselName}
+            </div>
         </div>
     );
 
     return L.divIcon({
         html: iconMarkup,
         className: 'bg-transparent',
-        iconSize: [20, 20],
-        iconAnchor: [10, 10],
+        iconSize: [20, 30],
+        iconAnchor: [10, 15],
     });
 };
 
@@ -129,7 +134,7 @@ export default function Map({ vessels, zones, pois = [], selectedVessel, onSelec
                 <Marker
                     key={vessel.id}
                     position={[vessel.lat, vessel.lng]}
-                    icon={createShipIcon(vessel.heading, vessel.type, selectedVessel?.id === vessel.id)}
+                    icon={createShipIcon(vessel.heading, vessel.type, selectedVessel?.id === vessel.id, vessel.name)}
                     eventHandlers={{
                         click: () => onSelectVessel(vessel),
                     }}
