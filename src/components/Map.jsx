@@ -52,9 +52,12 @@ function ReplayMapController({ replayVessel, replayMode }) {
 
 const createShipIcon = (heading, type, isSelected, vesselName) => {
     const color = isSelected ? 'hsl(217, 91%, 60%)' : 'hsl(215, 10%, 80%)';
+
+    // Use a fixed-size container for the icon so the anchor point remains consistent
+    // regardless of the text width. The text is absolutely positioned relative to this container.
     const iconMarkup = renderToStaticMarkup(
-        <div className="flex flex-col items-center">
-            <div className={`relative transition-all duration-300 ${isSelected ? 'scale-125' : ''}`} style={{ transform: `rotate(${heading - 45}deg)` }}>
+        <div className="relative w-5 h-5 flex items-center justify-center">
+            <div className={`transition-all duration-300 ${isSelected ? 'scale-125' : ''}`} style={{ transform: `rotate(${heading - 45}deg)` }}>
                 <Navigation
                     size={20}
                     fill={color}
@@ -62,7 +65,7 @@ const createShipIcon = (heading, type, isSelected, vesselName) => {
                     strokeWidth={1.5}
                 />
             </div>
-            <div className="text-[9px] font-medium text-white mt-0.5 whitespace-nowrap" style={{ textShadow: '0 0 3px rgba(0,0,0,0.8), 0 0 2px rgba(0,0,0,0.8)' }}>
+            <div className="absolute top-full left-1/2 -translate-x-1/2 text-[9px] font-medium text-white mt-1 whitespace-nowrap" style={{ textShadow: '0 0 3px rgba(0,0,0,0.8), 0 0 2px rgba(0,0,0,0.8)' }}>
                 {vesselName}
             </div>
         </div>
@@ -71,8 +74,8 @@ const createShipIcon = (heading, type, isSelected, vesselName) => {
     return L.divIcon({
         html: iconMarkup,
         className: 'bg-transparent',
-        iconSize: [20, 30],
-        iconAnchor: [10, 15],
+        iconSize: [20, 20],
+        iconAnchor: [10, 10],
     });
 };
 
