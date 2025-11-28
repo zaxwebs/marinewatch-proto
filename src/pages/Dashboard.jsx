@@ -24,13 +24,24 @@ export default function Dashboard() {
     const [isCoordinateLocked, setIsCoordinateLocked] = useState(false);
 
     const handleReplayStart = (vessel) => {
+        // Stop any existing replay and start new one
         setReplayVessel(vessel);
+        setReplayPosition(null); // Reset position to start from beginning
         setSelectedVessel(vessel);
     };
 
     const handleReplayClose = () => {
         setReplayVessel(null);
         setReplayPosition(null);
+    };
+
+    const handleVesselSelect = (vessel) => {
+        setSelectedVessel(vessel);
+        // If a different vessel is selected during replay, stop the replay
+        if (replayVessel && vessel.id !== replayVessel.id) {
+            setReplayVessel(null);
+            setReplayPosition(null);
+        }
     };
 
     const displayVessels = vessels.map(v => {
@@ -119,7 +130,7 @@ export default function Dashboard() {
                 vessels={vessels}
                 pois={pois}
                 selectedVessel={selectedVessel}
-                onSelectVessel={setSelectedVessel}
+                onSelectVessel={handleVesselSelect}
                 onReplayStart={handleReplayStart}
                 isOpen={isSidebarOpen}
                 setIsOpen={setIsSidebarOpen}
@@ -130,8 +141,9 @@ export default function Dashboard() {
                     zones={visibleZones}
                     pois={pois}
                     selectedVessel={selectedVessel}
-                    onSelectVessel={setSelectedVessel}
+                    onSelectVessel={handleVesselSelect}
                     replayMode={!!replayVessel}
+                    replayVessel={replayVessel}
                     showTracks={showTracks}
                     showPois={showPois}
                     measureMode={activeTool === 'measure'}

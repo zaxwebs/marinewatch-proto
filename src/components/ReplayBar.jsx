@@ -11,6 +11,12 @@ export default function ReplayBar({ vessel, onClose, onUpdatePosition }) {
     // History is already in chronological order (oldest to newest)
     const sortedHistory = vessel.history;
 
+    // Reset replay when vessel changes
+    useEffect(() => {
+        setCurrentIndex(0);
+        setIsPlaying(false);
+    }, [vessel.id]);
+
     useEffect(() => {
         if (isPlaying) {
             timerRef.current = setInterval(() => {

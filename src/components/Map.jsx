@@ -27,6 +27,29 @@ function MapController({ selectedVessel }) {
     return null;
 }
 
+function ReplayMapController({ replayVessel, replayMode }) {
+    const map = useMap();
+
+    useEffect(() => {
+        if (replayMode && replayVessel && replayVessel.history && replayVessel.history.length > 0) {
+            // Calculate bounds from vessel history
+            const bounds = L.latLngBounds(
+                replayVessel.history.map(point => [point.lat, point.lng])
+            );
+
+            // Fit the map to show the entire track with some padding
+            map.fitBounds(bounds, {
+                padding: [50, 50],
+                maxZoom: 15,
+                animate: true,
+                duration: 0.5
+            });
+        }
+    }, [replayMode, replayVessel, map]);
+
+    return null;
+}
+
 const createShipIcon = (heading, type, isSelected) => {
     const color = isSelected ? 'hsl(217, 91%, 60%)' : 'hsl(215, 10%, 60%)';
     const iconMarkup = renderToStaticMarkup(
@@ -48,7 +71,7 @@ const createShipIcon = (heading, type, isSelected) => {
     });
 };
 
-export default function Map({ vessels, zones, pois = [], selectedVessel, onSelectVessel, replayMode, showTracks = true, showPois = true, measureMode = false, measurePoints = [], onMeasurePointsChange, onMeasureClose, measureLocked, onMeasureLockToggle, coordinateMode = false, onCoordinateClose, onCursorCoordsChange, coordinateLocked, onCoordinateLockToggle }) {
+export default function Map({ vessels, zones, pois = [], selectedVessel, onSelectVessel, replayMode, replayVessel, showTracks = true, showPois = true, measureMode = false, measurePoints = [], onMeasurePointsChange, onMeasureClose, measureLocked, onMeasureLockToggle, coordinateMode = false, onCoordinateClose, onCursorCoordsChange, coordinateLocked, onCoordinateLockToggle }) {
     return (
         <MapContainer
             center={[1.28, 103.85]}
@@ -62,6 +85,7 @@ export default function Map({ vessels, zones, pois = [], selectedVessel, onSelec
             />
 
             <MapController selectedVessel={selectedVessel} />
+            <ReplayMapController replayMode={replayMode} replayVessel={replayVessel} />
             <MeasureTool active={measureMode} points={measurePoints} onPointsChange={onMeasurePointsChange} onClose={onMeasureClose} locked={measureLocked} onLockToggle={onMeasureLockToggle} />
             <CoordinateTool active={coordinateMode} onClose={onCoordinateClose} onCursorChange={onCursorCoordsChange} locked={coordinateLocked} onLockToggle={onCoordinateLockToggle} />
 
