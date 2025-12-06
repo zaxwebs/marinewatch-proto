@@ -133,6 +133,38 @@ export default function Map({ vessels, zones, pois = [], selectedVessel, onSelec
                 </Marker>
             ))}
 
+            {!replayMode && vessels.map(vessel => {
+                if (!vessel.history || vessel.history.length < 2) return null;
+
+                // Get the last 5 points + current position for the trail
+                // We need at least 2 points to make a line
+                const trailPoints = vessel.history.slice(-6);
+
+                return trailPoints.map((point, index) => {
+                    if (index === trailPoints.length - 1) return null; // Skip the last point as it's the start of no segment
+
+                    const start = point;
+                    const end = trailPoints[index + 1];
+
+                    // Calculate opacity based on index (fading out towards the tail)
+                    // index 0 is oldest, index length-2 is newest segment
+                    const opacity = 0.2 + ((index / (trailPoints.length - 2)) * 0.6);
+
+                    return (
+                        <Polyline
+                            key={`${vessel.id}-trail-${index}`}
+                            positions={[[start.lat, start.lng], [end.lat, end.lng]]}
+                            pathOptions={{
+                                color: 'hsl(217, 91%, 60%)',
+                                weight: 3,
+                                opacity: opacity,
+                                lineCap: 'round'
+                            }}
+                        />
+                    );
+                });
+            })}
+
             {vessels.map(vessel => (
                 <Marker
                     key={vessel.id}
