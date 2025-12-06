@@ -4,7 +4,7 @@ import { getClosestPoi } from '../lib/geoUtils';
 import { useSettings } from '../context/SettingsContext';
 import { useState } from 'react';
 
-export default function Sidebar({ vessels, pois = [], selectedVessel, onSelectVessel, onReplayStart, isOpen, setIsOpen }) {
+export default function Sidebar({ vessels, pois = [], selectedVessel, onSelectVessel, onReplayStart, onGlobalReplayStart, isOpen, setIsOpen }) {
     const { settings } = useSettings();
     const [searchQuery, setSearchQuery] = useState('');
     const [expandedVessel, setExpandedVessel] = useState(null);
@@ -28,7 +28,17 @@ export default function Sidebar({ vessels, pois = [], selectedVessel, onSelectVe
                         </div>
                         <h1 className="text-sm font-semibold tracking-tight">Vessels</h1>
                     </div>
-                    <span className="text-xs text-muted-foreground font-mono">{vessels.length}</span>
+                    <div className="flex items-center gap-2">
+                        <span className="text-xs text-muted-foreground font-mono">{vessels.length}</span>
+
+                        <button
+                            onClick={onGlobalReplayStart}
+                            className="p-1.5 rounded hover:bg-accent text-primary hover:text-primary/80 transition-colors"
+                            title="Replay All Vessels"
+                        >
+                            <Play size={14} />
+                        </button>
+                    </div>
                 </div>
 
                 <div className="relative">

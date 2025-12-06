@@ -14,8 +14,10 @@ export default function Dashboard() {
     const { zones, vessels, pois } = useApp();
     const [selectedVessel, setSelectedVessel] = useState(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-    const [replayVessel, setReplayVessel] = useState(null);
-    const [replayPosition, setReplayPosition] = useState(null);
+    const [replayMode, setReplayMode] = useState('none'); // 'none', 'single', 'global'
+    const [replayVessel, setReplayVessel] = useState(null); // For single mode
+    const [replayPositions, setReplayPositions] = useState({}); // Map of vesselId -> position
+
     const [layerVisibility, setLayerVisibility] = useState({});
     const [activeTool, setActiveTool] = useState(null); // 'measure', 'coordinate', 'layers', null
     const [measurePoints, setMeasurePoints] = useState([]);
@@ -25,15 +27,28 @@ export default function Dashboard() {
 
     const handleReplayStart = (vessel) => {
         // Stop any existing replay and start new one
+        setReplayMode('single');
         setReplayVessel(vessel);
-        setReplayPosition(null); // Reset position to start from beginning
+        setReplayPositions({});
         setSelectedVessel(vessel);
     };
 
-    const handleReplayClose = () => {
+    const handleGlobalReplayStart = () => {
+        setReplayMode('global');
         setReplayVessel(null);
-        setReplayPosition(null);
+        setReplayPositions({});
+        setSelectedVessel(null);
+        // Ensure sidebar is open to show controls if needed, or close it to show map? 
+        // Let's keep sidebar state as is.
     };
+
+
+    const handleReplayClose = () => {
+        setReplayMode('none');
+        setReplayVessel(null);
+        setReplayPositions({});
+    };
+
 
     const handleVesselSelect = (vessel) => {
         setSelectedVessel(vessel);
@@ -45,17 +60,20 @@ export default function Dashboard() {
     };
 
     const displayVessels = vessels.map(v => {
-        if (replayVessel && v.id === replayVessel.id && replayPosition) {
+        // Check if we have a replay position for this vessel
+        if (replayPositions[v.id]) {
+            const pos = replayPositions[v.id];
             return {
                 ...v,
-                lat: replayPosition.lat,
-                lng: replayPosition.lng,
-                heading: replayPosition.heading,
-                speed: replayPosition.speed
+                lat: pos.lat,
+                lng: pos.lng,
+                heading: pos.heading,
+                speed: pos.speed
             };
         }
         return v;
     });
+
 
     // Create layer objects for the layer control
     const layers = [
@@ -132,7 +150,9 @@ export default function Dashboard() {
                 selectedVessel={selectedVessel}
                 onSelectVessel={handleVesselSelect}
                 onReplayStart={handleReplayStart}
+                onGlobalReplayStart={handleGlobalReplayStart}
                 isOpen={isSidebarOpen}
+
                 setIsOpen={setIsSidebarOpen}
             />
             <div className="relative flex-1 h-full w-full">
@@ -142,8 +162,10 @@ export default function Dashboard() {
                     pois={pois}
                     selectedVessel={selectedVessel}
                     onSelectVessel={handleVesselSelect}
-                    replayMode={!!replayVessel}
-                    replayVessel={replayVessel}
+                    replayMode={replayMode !== 'none'}
+                    replayVessel={replayMode === 'single' ? replayVessel : null} // Pass specific vessel if in single mode, or null if global? Map expects one vessel for bounding box.
+                    // For global replay, we might want map to fit all? ReplayMapController logic handles one vessel.
+                    // We can update Map later to handle global bounds if needed. For now, let's pass null if global.
                     showTracks={showTracks}
                     showPois={showPois}
                     measureMode={activeTool === 'measure'}
@@ -217,13 +239,15 @@ export default function Dashboard() {
                         />
                     </div>
                 )}
-                {replayVessel && (
+                {replayMode !== 'none' && (
                     <ReplayBar
                         vessel={replayVessel}
+                        vessels={replayMode === 'global' ? vessels : null}
                         onClose={handleReplayClose}
-                        onUpdatePosition={setReplayPosition}
+                        onUpdatePosition={setReplayPositions}
                     />
                 )}
+
             </div>
         </div>
     );
